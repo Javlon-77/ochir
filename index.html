@@ -3,198 +3,132 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Control 1</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Black Screen</title>
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b1020;
+  color: white;
+}
+
+.home {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background:
-    radial-gradient(circle at top, #1e3a5f, #070b14 65%);
-  color: #eaf2ff;
-  font-family: "Segoe UI", Arial, sans-serif;
-}
-
-.panel {
-  width: min(420px, 92vw);
-  padding: 32px;
-  border: 1px solid #334155;
-  border-radius: 22px;
-  background: rgba(15, 23, 42, 0.94);
-  box-shadow: 0 25px 90px #0008;
-  text-align: center;
-}
-
-.logo {
-  width: 76px;
-  height: 76px;
-  margin: 0 auto 20px;
-  display: grid;
-  place-items: center;
-  border-radius: 22px;
-  background: #172554;
-  color: #60a5fa;
-  font-size: 36px;
-}
-
-h1 {
-  font-size: 25px;
-  margin: 0 0 10px;
-}
-
-.description {
-  color: #94a3b8;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.status {
-  margin: 24px 0;
-  padding: 13px;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  color: #93c5fd;
-  font-size: 13px;
-  background: #0f172a;
 }
 
 button {
-  width: 100%;
-  padding: 15px;
-  margin-top: 10px;
+  padding: 15px 32px;
   border: 0;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.primary {
-  background: #3b82f6;
-  color: white;
-}
-
-.primary:hover {
+  border-radius: 10px;
   background: #2563eb;
-  transform: translateY(-1px);
-}
-
-.secondary {
-  background: #334155;
   color: white;
+  font-size: 17px;
+  cursor: pointer;
 }
 
-.hidden {
+#screen {
   display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-.dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-  margin-right: 8px;
+#screen.active {
+  display: flex;
 }
 
-.footer {
-  color: #64748b;
-  font-size: 11px;
-  margin-top: 24px;
+.content {
+  padding: 24px;
 }
 
+h1 {
+  font-size: clamp(25px, 5vw, 42px);
+  letter-spacing: 3px;
+}
+
+p {
+  color: #999;
+}
+
+#exit {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 10px 16px;
+  font-size: 14px;
+  background: #292929;
+  border: 1px solid #555;
+}
+
+.hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 28px;
+}
 </style>
 </head>
-
 <body>
-<main class="panel">
-  <div class="logo">⏻</div>
 
-  <h1>System Control</h1>
-
-  <p class="description">
-    Kompyuterning quvvat rejimini boshqarish paneli.
-    Davom etish uchun quyidagi tugmani bosing.
-  </p>
-
-  <div class="status" id="status">
-    <span class="dot"></span>
-    Tizim tayyor
+<div class="home" id="home">
+  <div style="text-align:center;padding:20px">
+    <h1>System Control</h1>
+    <p>Davom etish uchun boshlash tugmasini bosing.</p>
+    <button id="start">Boshlash</button>
   </div>
+</div>
 
-  <section id="startSection">
-    <button class="primary" id="startBtn">
-      Boshlash
-    </button>
-  </section>
-
-  <section id="permissionSection" class="hidden">
-    <p>Kompyuterni Sleep rejimiga o'tkazishga rozimisiz?</p>
-    <button class="primary" id="allowBtn">
-      Roziman — davom etish
-    </button>
-    <button class="secondary" id="denyBtn">
-      Bekor qilish
-    </button>
-  </section>
-
-  <section id="finishSection" class="hidden">
-    <p class="description">
-      Rozilik tasdiqlandi. Brauzer kompyuterni bevosita
-      Sleep rejimiga o'tkaza olmaydi.
-    </p>
-    <button class="primary" id="againBtn">
-      Bosh sahifaga qaytish
-    </button>
-  </section>
-
-  <div class="footer">
-    SYSTEM CONTROL · MAHALLIY DEMO
+<div id="screen" role="dialog" aria-label="Qora ekran rejimi">
+  <div class="content">
+    <h1>SCREEN LOCK</h1>
+    <p>Ekran rejimi yoqildi.</p>
+    <p class="hint">Chiqish uchun ESC tugmasini bosing</p>
   </div>
-</main>
+  <button id="exit">Chiqish ✕</button>
+</div>
 
 <script>
-const status = document.getElementById("status");
-const startSection = document.getElementById("startSection");
-const permissionSection =
-  document.getElementById("permissionSection");
-const finishSection = document.getElementById("finishSection");
+const screen = document.getElementById("screen");
+const home = document.getElementById("home");
 
-function showStatus(message) {
-  status.textContent = message;
+document.getElementById("start").addEventListener("click", async () => {
+  screen.classList.add("active");
+  home.style.display = "none";
+
+  // Brauzer ruxsat bersa, to'liq ekran rejimini yoqadi.
+  try {
+    await document.documentElement.requestFullscreen();
+  } catch (e) {
+    // Fullscreen ruxsati bo'lmasa, qora qatlam ishlashda davom etadi.
+  }
+});
+
+function exitScreen() {
+  screen.classList.remove("active");
+  home.style.display = "grid";
+
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch(() => {});
+  }
 }
 
-document.getElementById("startBtn").onclick = () => {
-  startSection.classList.add("hidden");
-  permissionSection.classList.remove("hidden");
-  showStatus("Ruxsat kutilmoqda...");
-};
+document.getElementById("exit").addEventListener("click", exitScreen);
 
-document.getElementById("allowBtn").onclick = () => {
-  permissionSection.classList.add("hidden");
-  finishSection.classList.remove("hidden");
-  showStatus("Rozilik berildi");
-};
-
-document.getElementById("denyBtn").onclick = () => {
-  permissionSection.classList.add("hidden");
-  startSection.classList.remove("hidden");
-  showStatus("Amal bekor qilindi");
-};
-
-document.getElementById("againBtn").onclick = () => {
-  finishSection.classList.add("hidden");
-  startSection.classList.remove("hidden");
-  showStatus("Tizim tayyor");
-};
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    exitScreen();
+  }
+});
 </script>
+
 </body>
 </html>
