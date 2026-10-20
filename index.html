@@ -2,65 +2,199 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>System Control</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: grid;
-      place-items: center;
-      background: #0f172a;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Control</title>
 
-    .card {
-      text-align: center;
-      background: #1e293b;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px #0005;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    button {
-      padding: 15px 40px;
-      font-size: 18px;
-      background: #2563eb;
-      color: white;
-      border: 0;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at top, #1e3a5f, #070b14 65%);
+  color: #eaf2ff;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
 
-    button:hover {
-      background: #1d4ed8;
-    }
-  </style>
+.panel {
+  width: min(420px, 92vw);
+  padding: 32px;
+  border: 1px solid #334155;
+  border-radius: 22px;
+  background: rgba(15, 23, 42, 0.94);
+  box-shadow: 0 25px 90px #0008;
+  text-align: center;
+}
+
+.logo {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  background: #172554;
+  color: #60a5fa;
+  font-size: 36px;
+}
+
+h1 {
+  font-size: 25px;
+  margin: 0 0 10px;
+}
+
+.description {
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.status {
+  margin: 24px 0;
+  padding: 13px;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  color: #93c5fd;
+  font-size: 13px;
+  background: #0f172a;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.primary:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.secondary {
+  background: #334155;
+  color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  margin-right: 8px;
+}
+
+.footer {
+  color: #64748b;
+  font-size: 11px;
+  margin-top: 24px;
+}
+
+</style>
 </head>
+
 <body>
-  <div class="card">
-    <h1>Kompyuter boshqaruvi</h1>
-    <p>Davom etish uchun boshlash tugmasini bosing.</p>
-    <button onclick="boshlash()">Boshlash</button>
-    <p id="status"></p>
+<main class="panel">
+  <div class="logo">⏻</div>
+
+  <h1>System Control</h1>
+
+  <p class="description">
+    Kompyuterning quvvat rejimini boshqarish paneli.
+    Davom etish uchun quyidagi tugmani bosing.
+  </p>
+
+  <div class="status" id="status">
+    <span class="dot"></span>
+    Tizim tayyor
   </div>
 
-  <script>
-    function boshlash() {
-      const tasdiq = confirm(
-        "Kompyuterni Sleep rejimiga o'tkazishga rozimisiz?"
-      );
+  <section id="startSection">
+    <button class="primary" id="startBtn">
+      Boshlash
+    </button>
+  </section>
 
-      if (tasdiq) {
-        document.getElementById("status").textContent =
-          "Rozilik berildi. Windows dasturini alohida ishga tushiring.";
-      } else {
-        document.getElementById("status").textContent =
-          "Bekor qilindi.";
-      }
-    }
-  </script>
+  <section id="permissionSection" class="hidden">
+    <p>Kompyuterni Sleep rejimiga o'tkazishga rozimisiz?</p>
+    <button class="primary" id="allowBtn">
+      Roziman — davom etish
+    </button>
+    <button class="secondary" id="denyBtn">
+      Bekor qilish
+    </button>
+  </section>
+
+  <section id="finishSection" class="hidden">
+    <p class="description">
+      Rozilik tasdiqlandi. Brauzer kompyuterni bevosita
+      Sleep rejimiga o'tkaza olmaydi.
+    </p>
+    <button class="primary" id="againBtn">
+      Bosh sahifaga qaytish
+    </button>
+  </section>
+
+  <div class="footer">
+    SYSTEM CONTROL · MAHALLIY DEMO
+  </div>
+</main>
+
+<script>
+const status = document.getElementById("status");
+const startSection = document.getElementById("startSection");
+const permissionSection =
+  document.getElementById("permissionSection");
+const finishSection = document.getElementById("finishSection");
+
+function showStatus(message) {
+  status.textContent = message;
+}
+
+document.getElementById("startBtn").onclick = () => {
+  startSection.classList.add("hidden");
+  permissionSection.classList.remove("hidden");
+  showStatus("Ruxsat kutilmoqda...");
+};
+
+document.getElementById("allowBtn").onclick = () => {
+  permissionSection.classList.add("hidden");
+  finishSection.classList.remove("hidden");
+  showStatus("Rozilik berildi");
+};
+
+document.getElementById("denyBtn").onclick = () => {
+  permissionSection.classList.add("hidden");
+  startSection.classList.remove("hidden");
+  showStatus("Amal bekor qilindi");
+};
+
+document.getElementById("againBtn").onclick = () => {
+  finishSection.classList.add("hidden");
+  startSection.classList.remove("hidden");
+  showStatus("Tizim tayyor");
+};
+</script>
 </body>
 </html>
