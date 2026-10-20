@@ -4,62 +4,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kompyuter boshqaruvi</title>
+  <title>System Control</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #101827;
+      display: grid;
+      place-items: center;
+      background: #0f172a;
       color: white;
       font-family: Arial, sans-serif;
     }
 
-    .panel {
+    .card {
       text-align: center;
-      padding: 40px;
       background: #1e293b;
+      padding: 40px;
       border-radius: 20px;
       box-shadow: 0 10px 40px #0005;
     }
 
     button {
-      padding: 14px 35px;
-      border: none;
-      border-radius: 10px;
-      background: #3b82f6;
-      color: white;
+      padding: 15px 40px;
       font-size: 18px;
+      background: #2563eb;
+      color: white;
+      border: 0;
+      border-radius: 10px;
       cursor: pointer;
     }
 
     button:hover {
-      background: #2563eb;
+      background: #1d4ed8;
     }
   </style>
 </head>
 <body>
-  <div class="panel">
+  <div class="card">
     <h1>Kompyuter boshqaruvi</h1>
-    <p>Davom etish uchun tugmani bosing.</p>
+    <p>Davom etish uchun boshlash tugmasini bosing.</p>
     <button onclick="boshlash()">Boshlash</button>
-    <p id="natija"></p>
+    <p id="status"></p>
   </div>
 
   <script>
     function boshlash() {
-      const ruxsat = confirm(
-        "Kompyuterni Sleep rejimiga o'tkazishni xohlaysizmi?"
+      const tasdiq = confirm(
+        "Kompyuterni Sleep rejimiga o'tkazishga rozimisiz?"
       );
 
-      if (ruxsat) {
-        document.getElementById("natija").textContent =
-          "Tasdiqlandi. Sleep funksiyasi uchun mahalliy dastur kerak.";
+      if (tasdiq) {
+        document.getElementById("status").textContent =
+          "Rozilik berildi. Windows dasturini alohida ishga tushiring.";
       } else {
-        document.getElementById("natija").textContent =
-          "Amal bekor qilindi.";
+        document.getElementById("status").textContent =
+          "Bekor qilindi.";
       }
     }
   </script>
